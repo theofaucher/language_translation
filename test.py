@@ -1,54 +1,34 @@
-import json, pickle, os
-from argparse import ArgumentParser, Namespace
+#Librairie utile dans ce programme
+import json, pickle, os #Interaction avec l'OS
+from argparse import ArgumentParser, Namespace #Permet d'avoir des arguments à l'exécution du programme
 import tensorflow as tf
-from model import Encoder, BahdanauAttention, Decoder
-from libProject import  preprocessSentences, translate
+from model import Encoder, BahdanauAttention, Decoder #Import du modèle de l'IA depuis le fichier model
+from libProject import translate, createNetworkAndApplyCheckPointsAndConfig #Import de ma librairie
 
-def test(args: Namespace):
+def test(configName):
+    '''
+    Programme CLI permettant d'essayer un entraînement
 
-    if(args.config_name == None):
-        print('Aucun fichier de configuration est indiqué dans les paramètres.')
-        quit()
+    configName: Nom du répertoire qui contient l'entraînement que vous voulez essayer (ex : test1)
+    '''
 
-    checkpointAndConfigDirectory = './outputs/{}/'.format(args.config_name)
-    configTrain = json.load(open(checkpointAndConfigDirectory + 'config.json', 'r', encoding='UTF-8'))
-    batchSize = 1 #1 setence to predict
-    encoder = Encoder(configTrain['vocabInputSize'], configTrain['outputSize'], configTrain['units'], batchSize)
-    decoder = Decoder(configTrain['vocabTargetSize'], configTrain['outputSize'], configTrain['units'], batchSize)
-    optimizer = tf.keras.optimizers.Adam()
-    checkpoint = tf.train.Checkpoint(optimizer=optimizer, encoder=encoder, decoder=decoder)
-    manager = tf.train.CheckpointManager(checkpoint, checkpointAndConfigDirectory, max_to_keep=3)
-    checkpoint.restore(manager.latest_checkpoint)
+    #Création du réseau avec les paramètres présent dans le répertoire fourni en paramètre
+    encoder, decoder, inputVocab, targetVocab, configTrain = createNetworkAndApplyCheckPointsAndConfig(configName)
 
-    vocabsDirectory = './outputs/{}/'.format(args.config_name) 
-
-    with open( vocabsDirectory + 'inputVocab.pickle', 'rb') as handle:
-        inputVocab = pickle.load(handle)
-
-    with open(vocabsDirectory + 'targetVocab.pickle', 'rb') as handle:
-        targetVocab = pickle.load(handle)
-
+    #Tant que vrai
     while True:
-        sentence = input(
-            'Ecrivez une phrase: ')
+        sentence = input('Ecrivez une phrase: ') #Le programme récupère la phrase saisie après appui de la touche entrée
 
+        #Si la phrase est vide, on quitte le programme
         if sentence == '':
             break
-        
-        input_lang_tokenizer = tf.keras.preprocessing.text.Tokenizer(filters='')
-        input_lang_tokenizer.word_index = inputVocab
 
-        target_lang_tokenizer = tf.keras.preprocessing.text.Tokenizer(filters='', oov_token='<unk>') # , oov_token='<unk>'
-        target_lang_tokenizer.word_index = targetVocab
-
+        #Appel de la fonction translate pour effectuer une traduction
         translate(sentence, configTrain['vocabTargetSize'], configTrain['vocabInputSize'], configTrain['inputSentencesSize'], configTrain['targetSentencesSize'], inputVocab, targetVocab, configTrain['units'], encoder, decoder)
-
-
 
 
 def main():
     pass
-
 
 if __name__ == '__main__':
     main()

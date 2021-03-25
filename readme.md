@@ -24,11 +24,11 @@ http://www.manythings.org/anki/
 
 ### 1 - Modèle:
 
-![Réseau de neurone récurrent à encoder et decoder LSTM avec un attention layer](markdownDocumentation/attention_mechanism.jpg)
+![Réseau de neurone récurrent à encoder et decoder GRU avec un attention layer](attention_mechanism.jpg)
 
 Réseau de neurone récurrent à encoder et decoder GRU avec un attention layer
 
-### 2 - Utilisation:
+### 2 - Utilisation (Entraînement et test):
 
 ```
 usage: main.py [-h] [--mode MODE] [--config-name]
@@ -38,12 +38,12 @@ usage: main.py [-h] [--mode MODE] [--config-name]
 optional arguments:
   -h, --help            Montre ceci
   --mode MODE           Train ou test
-  --init-checkpoint FILE Chemin pour enregistrer/charger les checkpoints et le config.json
+  --config-name FILE Chemin pour enregistrer/charger les checkpoints et le config.json
   --batch-size INT      Taille des batchs <default: 32>
   --epoch INT           Nombre epoch <default: 10>
   --embedding-dim INT   Dimension de l'embedding <default: 256>
   --units INT           units <default: 512>
-  --sentences-size STRING  nombre de phrases prises dans la dataset<default: 60000>
+  --sentences-size INT  nombre de phrases prises dans la dataset<default: 60000>
 ```
 
 ### 4 - Exemple:
@@ -67,6 +67,18 @@ Ecrivez une phrase (Entrer pour quitter):  : What is your name?
 
 > ### Requête type
 >
-> `translate.ukio.fr/translate/?source=fr&destination=en&original=Bonjour`
+> `<URL>:5000/translate/?source=fr&destination=en&original=Bonjour`
 
-## Site web: translate.ukio.fr
+> ### Résultat type
+>
+> `Hello`
+
+  ### Usage
+  ```
+usage: api.py [-h]  [--config-fren] [--config-enfr]
+
+optional arguments:
+  -h, --help            Montre ceci
+  --config-enfr FILE Chemin pour charger les checkpoints et le config.json pour la traduction de Français vers Anglais
+  --config-fren FILE Chemin pour charger les checkpoints et le config.json pour la traduction de Anglais vers Français
+```
