@@ -58,7 +58,7 @@ Ecrivez une phrase (Entrer pour quitter):  : What is your name?
 <start> What is your name ? <end>
 <start> Quelle est ton prénom <end>
 
-Ecrivez une phrase (Entrer pour quitter):  : What is your name?
+Ecrivez une phrase (Entrer pour quitter):  : My name is Théo
 <start> My name is Théo <end>
 <start> Mon nom est <unk> <end>
 ```
